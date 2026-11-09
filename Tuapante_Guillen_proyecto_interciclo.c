@@ -6,7 +6,7 @@
 #include <string.h>
 
 // datos de una solicitud, pila
-struct Solicitud {
+typedef struct Solicitud {
     char cedula[15];
     char servicio[50];
     char tecnico[50];
@@ -16,14 +16,18 @@ struct Solicitud {
 
 
 // nodo de la lista de clientes, linsta enlazada simple
-struct Cliente {
+typedef struct Cliente {
     char cedula[15];
     char nombres[50];
     char apellidos[50];
     struct Cliente *sig;
-};
+} Cliente;
 
-struct Cliente *cima_sol = NULL;   // tope de la pila de solicitudes
+Solicitud *cima_sol = NULL;   // tope de la pila de solicitudes
+
+Cliente *primer_cli = NULL; //primer y ultimo de la lista enlazada
+Cliente *fin_cli = NULL;
+
 
 //funciones
 int menu();
