@@ -10,6 +10,7 @@
 //funciones
 void bailecito();
 void crearCliente();
+//void crearSolicitud();
 void imprimirClientes();
 void imprimirSolicitudes();
 void liberarMemoria_cli();
@@ -195,13 +196,13 @@ int main() {
 				crearCliente(); 
 				break;
             case 3: 
-				imprimirClientes();
+			//	crearSolicitud();
 				break;
             case 4:
-				imprimirSolicitudes();
+				imprimirClientes();
 				break;
             case 5:
-				
+				imprimirSolicitudes();
 				break;
             case 6:
 				printf("Salir\n");
