@@ -45,6 +45,12 @@ void push_dinamico(char cedula_enc[15]);
 void eliminarSolicitud(int version);//borra la solicitud si existe el cliente
 void pop_dinamico();
 
+//versiones estaticas de push y pop
+void push2(Solicitud **tope, Solicitud *nuevo);
+void push_estatico(char cedula_enc[15]);
+Solicitud *pop2(Solicitud **tope);
+Solicitud *pop_estatico(Solicitud **tope);
+
 
 int main() {
     int op, version;
@@ -225,7 +231,7 @@ void crearSolicitud(int version)
     if (version == 1) //version memoria dinamica
         push_dinamico(actual->cedula);
     else //version estatica
-    {}
+        push_estatico(actual->cedula);
 }
 
 void push_dinamico(char cedula_enc[15])
@@ -298,6 +304,7 @@ void eliminarSolicitud(int version)
     }
     else //version estatica
     {
+        pop_estatico(cima_sol);
         printf("\n--------------\nPrimera solicitud de la pila eliminada exitosamente.\n--------------\n");
     }
 }
@@ -315,4 +322,66 @@ void pop_dinamico()
     //la solicitud borrada se muestra en pantalla antes de borrarse
     cima_sol = cima_sol->sol_sig;
     free(temp);
+}
+
+// push version 2: recibe un nodo ya creado
+// se usa doble puntero para poder cambiar la cima desde la funcion
+void push2(Solicitud **tope, Solicitud *nuevo)
+{
+    nuevo->sol_sig= *tope; //el nuevo apunta a la cima actual
+    *tope = nuevo;          //el nuevo pasa a ser la cima
+}
+
+void push_estatico(char cedula_enc[15])
+{
+    Solicitud *nuevo = (Solicitud *)malloc(sizeof(Solicitud));
+
+    if (nuevo == NULL)
+    {
+        printf("No hay memoria suficiente.\n");
+        return;
+    }
+
+    strcpy(nuevo->cedula, cedula_enc);
+    printf("Ingrese el servicio que necesita: ");
+    scanf(" %49[^\n]", nuevo->servicio);
+    printf("Ingrese el nombre del tecnico: ");
+    scanf(" %49[^\n]", nuevo->tecnico);
+    printf("Ingrese una descripcion del problema: ");
+    scanf(" %99[^\n]", nuevo->descripcion);
+
+    push2(&cima_sol, nuevo);
+
+    printf("\n-------------------------\nIngresado con exito.\n-------------------------\n");
+}
+
+// pop version 2: saca el nodo de la cima y lo devuelve
+Solicitud *pop2(Solicitud **tope)
+{
+    if (*tope == NULL) //pila vacia, no hay nada que sacar
+        return NULL;
+
+    Solicitud *aux = *tope;
+    *tope = (*tope)->sol_sig; //la cima baja al siguiente
+    aux->sol_sig = NULL;      //el nodo sale desconectado de la pila
+    return aux;
+}
+
+// crea el nodo de la solicitud y lo pasa a push2
+Solicitud *pop_estatico(Solicitud **tope)
+{
+    if (*tope == NULL) //pila vacia, no hay nada que sacar
+        return NULL;
+
+    Solicitud *aux = *tope;
+    *tope = (*tope)->sol_sig; //la cima baja al siguiente
+    aux->sol_sig = NULL;      //el nodo sale desconectado de la pila
+    return aux;
+}
+
+void bailecito()
+{
+	printf("Elija un balicecito\n");
+	printf("Baile 1: Campanas de Belen\n");
+	printf("Baile 2: Por definir");
 }
