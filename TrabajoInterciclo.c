@@ -1,11 +1,9 @@
 //Trabajo Interciclo
 //MAteo Guillen, Franklin Tuapante
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 
 //funciones
 void bailecito();
@@ -76,19 +74,6 @@ void crearCliente()
     printf("Ingrese los datos del cliente\n");
 	printf("Cedula: ");
 	scanf(" %14[^\n]", nuevo->cedula);
-
-	//verificar que la cedula no este repetida
-	Cliente *buscar = primer_cli;
-	while (buscar != NULL)
-	{
-		if (strcmp(buscar->cedula, nuevo->cedula) == 0)
-		{
-			printf("\n-------------------------\nYa existe un cliente con esa cedula.\n-------------------------\n");
-			free(nuevo);
-			return;
-		}
-		buscar = buscar->sig_cli;
-	}
 
 	printf("Nombres: ");
 	scanf(" %49[^\n]", nuevo->nombres);
