@@ -36,6 +36,7 @@ void crearCliente();
 void liberarMemoria_cli(); //libera la lista enlazada de los clientes
 void liberarMemoria_sol(); //libera la pila de solicitudes
 void liberarMemoria(); //llama a las dos funciones anteriores para liberar la memoria por completo
+void imprimirClientes(); //muestra los clientes en pantalla
 
 
 int main() {
@@ -69,6 +70,7 @@ int main() {
                 {}
 				break;
             case 4: //mostar clientes
+                imprimirClientes();
                 break;
             case 5: //mostrar solicitudes
                 break;
@@ -108,13 +110,13 @@ void crearCliente()
 
     printf("Ingrese los datos del cliente\n");
 	printf("Cedula: ");
-	scanf(" %14[^/n]", nuevo->cedula);
+	scanf("%s", nuevo->cedula);
 	
 	printf("Nombres: ");
-	scanf(" %49[^/n]", nuevo->nombres);
+	scanf("%s", nuevo->nombres);
 	
 	printf("Apellidos: ");
-	scanf(" %49[^/n]", nuevo->apellidos);
+	scanf("%s", nuevo->apellidos);
 
     if (primer_cli == NULL) //si la lista esta vacia (no hay clientes)
     {
@@ -168,3 +170,24 @@ void liberarMemoria()
     liberarMemoria_sol();
 }
 
+
+void imprimirClientes()
+{
+    Cliente *baile = primer_cli;
+    int contador = 1;
+
+    if (baile == NULL)
+    {
+        printf("No hay clientes registrados\n");
+        return;
+    }
+
+    printf("\nLista de Clientes\n----------------------------------------\n");
+    while (baile != NULL) //recorre la lista desde el primero hasta el ultimo
+    {
+        printf("%d. Cedula: %s | Nombres: %s | Apellidos: %s\n", contador, baile->cedula, baile->nombres, 
+		baile->apellidos);
+    	baile = baile->cli_sig;
+        contador++;
+    }
+}
