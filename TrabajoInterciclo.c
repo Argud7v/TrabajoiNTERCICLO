@@ -6,37 +6,58 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*
+
 //funciones
 void crearCliente();
-void registrar(); 
-//void retirar(); */
+//void registrar(); 
+//void retirar(); 
 
 
 
 
 
 // datos de una solicitud
-struct Solicitud {
+typedef struct Solicitud {
     char cedula[15];
     char servicio[50];
     char tecnico[50];
     char descripcion[100];
-};
+    struct Solicitud *sig;              
+} Solicitud;
 
+ Solicitud *cima_sol=NULL;
 
 // nodo de la lista de clientes
-struct Cliente {
+typedef struct Cliente {
     char cedula[15];
     char nombres[50];
     char apellidos[50];
-    Nodo *pila;   // tope de la pila de solicitudes
-    Cliente *sig;
-};
+    struct Cliente;
+}Cliente;
+
+ Cliente *cima_cli=NUll;
+ Cliente *fi_cli=NULL;
+ 
+
+void crearCliente(){
+	
+	Cliente *nuevo = (Cliente*)malloc(sizeof(Clie<));
+	
+	printf("Ingrese los datos del cliente");
+	printf("Cedula: ")
+	scanf("%s", nuevo->cedula);
+	
+	printf("Nombres: ");
+	scanf("%s", nuevo->nombres);
+	
+	printf("Apellidos: ");
+	scanf("%s", nuevo->apellidos);
+	
+
+	 
+}
 
 
-//Clientes
-// crea un cliente y lo pone al inicio de la lista
 
 
 int main() {
@@ -53,7 +74,7 @@ int main() {
         printf("1. Crear cliente\n");
         printf("2. Registrar solicitud\n");
         printf("3. Retirar solicitud\n");
-        printf("0. Salir\n");
+        printf("4. Salir\n");
         printf("Opcion: ");
         scanf("%d", &op);
 
