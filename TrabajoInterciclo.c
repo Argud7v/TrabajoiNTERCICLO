@@ -12,6 +12,10 @@ void bailecito();
 void crearCliente();
 void imprimirClientes();
 void imprimirSolicitudes();
+void liberarMemoria_cli();
+void liberarMemoria_sol();
+void liberarMemoria();
+
 //void registrar(); 
 //void retirar(); 
 
@@ -100,12 +104,67 @@ void imprimirClientes()
     }
 }
 
-
 void imprimirSolicitudes(){
+	
+	Solicitud *aux = cima_sol;
+	int contador=1;
+	
+	if(aux==NULL){
+		printf("No hay solicitudes registradas\n");
+        return;		
+	}
+	
+	printf("\nLista de Solicitud\n");
+    while (aux != NULL) //recorre la lista desde el primero hasta el ultimo
+    {
+        printf("%d. Cedula: %s | Servicio: %s | Tecnico: %s\n | Descripcion: %s |", contador, aux->cedula, 
+		aux->servicio, aux->tecnico, aux->descripcion);
+    	aux = aux->sig_sol;
+        contador++;
+    }
 	
 	
 }
 
+
+void liberarMemoria_cli()
+{
+    Cliente *actual; //para moverse a traves de la lista
+
+    actual = primer_cli;
+    Cliente *siguiente;
+
+    while (actual != NULL)
+    {
+        siguiente = actual->sig_cli; //guardar el siguiente nodo para no perder la lista
+        free(actual); 
+        actual = siguiente;
+    }
+
+    primer_cli = NULL; //asegurarse que no apunten a nada
+    fin_cli = NULL;
+}
+
+void liberarMemoria_sol()
+{
+    Solicitud *actual; //para moverse a traves de la lista
+
+    actual = cima_sol;
+    Solicitud *siguiente;
+
+    while (actual != NULL)
+    {
+        siguiente = actual->sig_sol; //guardar el siguiente nodo para no perder la lista
+        free(actual); //liberar
+        actual = siguiente;
+    }
+    cima_sol = NULL; 
+}
+
+void liberarMemoria(){
+    liberarMemoria_cli();
+    liberarMemoria_sol();
+}
 
 int main() {
     int op, version;
