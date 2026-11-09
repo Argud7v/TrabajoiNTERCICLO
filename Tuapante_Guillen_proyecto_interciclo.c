@@ -40,8 +40,10 @@ void imprimirSolicitudes(); //muestra las solicitudes en pantalla
 
 //manejo de datos
 void crearCliente(); //toma los datos del cliente y los agrega a un lista sin orden
-void crearSolicitud(int version);
+void crearSolicitud(int version); //crea la solicitud si existe el cliente
 void push_dinamico(char cedula_enc[15]);
+void eliminarSolicitud(int version);//borra la solicitud si existe el cliente
+void pop_dinamico();
 
 
 int main() {
@@ -64,7 +66,7 @@ int main() {
                 crearSolicitud(version);
 				break;
             case 3: //retirar solicitud (pop, ambas versiones)
-
+                eliminarSolicitud(version);
 				break;
             case 4: //mostar clientes
                 imprimirClientes();
@@ -105,6 +107,7 @@ void crearCliente()
 {
     //se guardara los clientes en una lista enlazada simple
     Cliente *nuevo = malloc(sizeof(Cliente)); //se crea un nuevo nodo
+    nuevo->cli_sig = NULL;
 
     printf("Ingrese los datos del cliente\n");
 	printf("Cedula: ");
@@ -278,4 +281,38 @@ void imprimirSolicitudes()
     	aux = aux->sol_sig;
         contador++;
     }
+}
+
+void eliminarSolicitud(int version)
+{
+    //por si la pila esta vacia
+    if (primer_cli == NULL)
+    {
+        printf("\n--------------La lista de clientes esta vacia.\n--------------\n");
+    }
+
+    if (version == 1) //version memoria dinamica
+    {
+        pop_dinamico();
+        printf("\n--------------\nPrimera solicitud de la pila eliminada exitosamente.\n--------------\n");
+    }
+    else //version estatica
+    {
+        printf("\n--------------\nPrimera solicitud de la pila eliminada exitosamente.\n--------------\n");
+    }
+}
+
+void pop_dinamico()
+{
+    if (cima_sol == NULL)
+    {
+        printf("La pila esta vacia.\n");
+        return;
+    }
+
+    Solicitud *temp = cima_sol;
+
+    //la solicitud borrada se muestra en pantalla antes de borrarse
+    cima_sol = cima_sol->sol_sig;
+    free(temp);
 }
