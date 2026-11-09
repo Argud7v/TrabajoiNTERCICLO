@@ -97,18 +97,18 @@ int menu()
 
 void crearCliente()
 {
-	//se guardara los clientes en una lista enlazada simple
+    //se guardara los clientes en una lista enlazada simple
     Cliente *nuevo = malloc(sizeof(Cliente)); //se crea un nuevo nodo
 
     printf("Ingrese los datos del cliente");
 	printf("Cedula: ");
-	scanf("%s", nuevo->cedula);
+	scanf(" %14[^/n]", nuevo->cedula);
 	
 	printf("Nombres: ");
-	scanf("%s", nuevo->nombres);
+	scanf(" %49[^/n]", nuevo->nombres);
 	
 	printf("Apellidos: ");
-	scanf("%s", nuevo->apellidos);
+	scanf(" %49[^/n]", nuevo->apellidos);
 
     if (primer_cli == NULL) //si la lista esta vacia (no hay clientes)
     {
