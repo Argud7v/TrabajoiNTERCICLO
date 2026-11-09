@@ -13,8 +13,10 @@ void crearCliente();
 void crearSolicitud(int version);
 void imprimirClientes();
 void imprimirSolicitudes();
+
 void push_dinamico(char cedula_enc[15]);
 void push_version2(char cedula_enc[15]);
+
 void pop_dinamico();
 void retirarSolicitud(int version);
 int leerEntero();
@@ -54,7 +56,7 @@ void bailecito(){
 	
 	printf("Elija un bailecito\n");
 	printf("Baile 1: Campanas de Belen\n");
-	printf("Baile 2: Por definir\n");
+	printf("Baile 2: La Macarena\n");
 }
 
 
