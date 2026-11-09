@@ -48,8 +48,8 @@ typedef struct Cliente {
  
 void bailecito(){
 	
-	printf("Eliga un balicecito");
-	printf("Baile 1: Campanas de Belen");
+	printf("Eliga un balicecito\n");
+	printf("Baile 1: Campanas de Belen\n");
 	printf("Baile 2: Por definir");
 }
 
@@ -62,13 +62,13 @@ void crearCliente()
 
     printf("Ingrese los datos del cliente\n");
 	printf("Cedula: ");
-	scanf("%s", nuevo->cedula);
+	scanf(" %14[^\n]s ", nuevo->cedula);
 	
 	printf("Nombres: ");
-	scanf("%s", nuevo->nombres);
+	scanf(" %49[^\n]s", nuevo->nombres);
 	
 	printf("Apellidos: ");
-	scanf("%s", nuevo->apellidos);
+	scanf(" %49[^\n]s", nuevo->apellidos);
 
     if (primer_cli == NULL) //si la lista esta vacia (no hay clientes)
     {
@@ -181,9 +181,9 @@ int main() {
         printf("1. Bailecito\n");
         printf("2. Crear cliente\n");
         printf("3. Registrar solicitud\n");
-        printf("4. Retirar solicitud\n");
-        printf("5. Mostrar clientes\n");
-        printf("6. Mostrar solicitudes\n");
+        printf("4. Mostrar Clientes\n");
+        printf("5. Mostrar Solicitudes\n");
+        printf("6. Mostrar nada\n");
         printf("7. Salir\n");
         printf("Opcion: ");
         scanf("%d", &op);
