@@ -31,6 +31,7 @@ Cliente *fin_cli = NULL;
 
 //funciones
 int menu();
+void crearCliente();
 
 
 int main() {
@@ -47,7 +48,7 @@ int main() {
 
         switch (op) {
             case 1: //crear cliente
-			
+                crearCliente();
 				break;
             case 2: //registrar solicitud (push, ambas versiones)
 			    if (version == 1)
@@ -94,4 +95,30 @@ int menu()
         return opcion;
 }
 
+void crearCliente()
+{
+	//se guardara los clientes en una lista enlazada simple
+    Cliente *nuevo = malloc(sizeof(Cliente)); //se crea un nuevo nodo
+
+    printf("Ingrese los datos del cliente");
+	printf("Cedula: ");
+	scanf("%s", nuevo->cedula);
+	
+	printf("Nombres: ");
+	scanf("%s", nuevo->nombres);
+	
+	printf("Apellidos: ");
+	scanf("%s", nuevo->apellidos);
+
+    if (primer_cli == NULL) //si la lista esta vacia (no hay clientes)
+    {
+        primer_cli = nuevo; 
+        fin_cli = nuevo;
+        return;
+    }
+    
+    //insertar al final si el numero de nodos es mayor a cero
+    fin_cli->sig = nuevo;
+    fin_cli = nuevo;
+}
 
