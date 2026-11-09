@@ -15,6 +15,9 @@ void imprimirClientes();
 void imprimirSolicitudes();
 void push_dinamico(char cedula_enc[15]);
 void push_version2(char cedula_enc[15]);
+void pop_dinamico();
+void retirarSolicitud(int version);
+int leerEntero();
 
 void liberarMemoria_cli();
 void liberarMemoria_sol();
@@ -42,16 +45,16 @@ typedef struct Cliente {
     char nombres[50];
     char apellidos[50];
     struct Cliente *sig_cli;
-} Cliente;;
+} Cliente;
 
  Cliente *primer_cli=NULL; // inicio de la lista de clientes
  Cliente *fin_cli=NULL;
  
 void bailecito(){
 	
-	printf("Eliga un balicecito\n");
+	printf("Elija un bailecito\n");
 	printf("Baile 1: Campanas de Belen\n");
-	printf("Baile 2: Por definir");
+	printf("Baile 2: Por definir\n");
 }
 
 
@@ -59,17 +62,37 @@ void crearCliente()
 {
 	//se guardara los clientes en una lista enlazada simple
     Cliente *nuevo = (Cliente *)malloc(sizeof(Cliente)); //se crea un nuevo nodo
+
+    //medida de seguridad
+    if (nuevo == NULL)
+    {
+        printf("No hay memoria suficiente.\n");
+        return;
+    }
     nuevo->sig_cli = NULL;
 
     printf("Ingrese los datos del cliente\n");
 	printf("Cedula: ");
 	scanf(" %14[^\n]", nuevo->cedula);
-	
+
+	//verificar que la cedula no este repetida
+	Cliente *buscar = primer_cli;
+	while (buscar != NULL)
+	{
+		if (strcmp(buscar->cedula, nuevo->cedula) == 0)
+		{
+			printf("\n-------------------------\nYa existe un cliente con esa cedula.\n-------------------------\n");
+			free(nuevo);
+			return;
+		}
+		buscar = buscar->sig_cli;
+	}
+
 	printf("Nombres: ");
-	scanf(" %49[^\n]s", nuevo->nombres);
-	
+	scanf(" %49[^\n]", nuevo->nombres);
+
 	printf("Apellidos: ");
-	scanf(" %49[^\n]s", nuevo->apellidos);
+	scanf(" %49[^\n]", nuevo->apellidos);
 
     if (primer_cli == NULL) //si la lista esta vacia (no hay clientes)
     {
@@ -112,7 +135,7 @@ void crearSolicitud(int version){
     printf("Ingrese la cedula del cliente que desea crear una solicitud: ");
     scanf("%14s", ced_buscar);
 
-    //por si la pila esta vacia
+    //por si la lista de clientes esta vacia
     if (primer_cli == NULL)
     {
         printf("\n--------------La lista de clientes esta vacia.\n--------------\n");
@@ -128,7 +151,7 @@ void crearSolicitud(int version){
 
     if (actual == NULL)
     {
-        printf("\n-------------------------\nLa cedula no esta reegistrada como cliente. Por favor registrarse.\n-------------------------\n");
+        printf("\n-------------------------\nLa cedula no esta registrada como cliente. Por favor registrarse.\n-------------------------\n");
         return;
     }
 
@@ -199,6 +222,62 @@ void push_dinamico(char cedula_enc[15])
     }
 
     printf("\n-------------------------\nIngresado con exito.\n-------------------------\n");
+}
+
+//pop: version 1
+void pop_dinamico()
+{
+    if (cima_sol == NULL)
+    {
+        printf("La pila esta vacia.\n");
+        return;
+    }
+
+    Solicitud *temp = cima_sol;
+
+    //la solicitud borrada se muestra en pantalla antes de borrarse
+    printf("\n-------------------------\nSolicitud retirada:\n");
+    printf("Cedula: %s | Servicio: %s | Tecnico: %s | Descripcion: %s\n-------------------------\n",
+           temp->cedula, temp->servicio, temp->tecnico, temp->descripcion);
+
+    cima_sol = cima_sol->sig_sol;
+    free(temp);
+}
+
+// retira la solicitud de la cima segun la version elegida
+void retirarSolicitud(int version)
+{
+    if (version == 1)
+    {
+        pop_dinamico();
+        return;
+    }
+
+    //version 2: pop2 devuelve el nodo, aqui se muestra y se libera
+    Solicitud *sacada = pop2(&cima_sol);
+
+    if (sacada == NULL)
+    {
+        printf("La pila esta vacia.\n");
+        return;
+    }
+
+    printf("\n-------------------------\nSolicitud retirada:\n");
+    printf("Cedula: %s | Servicio: %s | Tecnico: %s | Descripcion: %s\n-------------------------\n",
+           sacada->cedula, sacada->servicio, sacada->tecnico, sacada->descripcion);
+    free(sacada);
+}
+
+// lee un entero y limpia el buffer si se escriben letras
+int leerEntero()
+{
+    int numero;
+    while (scanf("%d", &numero) != 1)
+    {
+        while (getchar() != '\n'); //descartar lo que no es numero
+        printf("Ingrese un numero valido: ");
+    }
+    return numero;
 }
 
 
@@ -290,7 +369,7 @@ int main() {
     // primero se elige la version
     do {
         printf("Version de push/pop (1 o 2): ");
-        scanf("%d", &version);
+        version = leerEntero();
     } while (version != 1 && version != 2);
 
     do {
@@ -300,9 +379,10 @@ int main() {
         printf("3. Registrar solicitud\n");
         printf("4. Mostrar Clientes\n");
         printf("5. Mostrar Solicitudes\n");
-        printf("6. Salir\n");
+        printf("6. Retirar solicitud\n");
+        printf("7. Salir\n");
         printf("Opcion: ");
-        scanf("%d", &op);
+        op = leerEntero();
 
         switch (op) {
             case 1:
@@ -321,13 +401,16 @@ int main() {
 				imprimirSolicitudes();
 				break;
             case 6:
+				retirarSolicitud(version);
+				break;
+            case 7:
 				printf("Salir\n");
 				break;
             default:
 			printf("Opcion no valida\n");
 			 
         }
-    } while (op != 6);
+    } while (op != 7);
 
     liberarMemoria(); //liberar clientes y solicitudes al salir
     return 0;
