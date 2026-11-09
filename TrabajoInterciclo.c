@@ -10,6 +10,8 @@
 //funciones
 void bailecito();
 void crearCliente();
+void imprimirClientes();
+void imprimirSolicitudes();
 //void registrar(); 
 //void retirar(); 
 
@@ -23,7 +25,7 @@ typedef struct Solicitud {
     char servicio[50];
     char tecnico[50];
     char descripcion[100];
-    struct Solicitud *sig;              
+    struct Solicitud *sig_sol;              
 } Solicitud;
 
  Solicitud *cima_sol=NULL; // tope de la pila de solicitudes
@@ -33,10 +35,10 @@ typedef struct Cliente {
     char cedula[15];
     char nombres[50];
     char apellidos[50];
-    struct Cliente;
-}Cliente;
+    struct Cliente *cli_sig;
+} Cliente;;
 
- Cliente *cima_cli=NUll;
+ Cliente *primer_cli=NULL; // inicio de la lista de clientes
  Cliente *fin_cli=NULL;
  
 void bailecito(){
@@ -47,12 +49,14 @@ void bailecito(){
 }
 
 
-void crearCliente(){
-	
-	Cliente *nuevo = (Cliente*)malloc(sizeof(Clie<));
-	
-	printf("Ingrese los datos del cliente");
-	printf("Cedula: ")
+void crearCliente()
+{
+	//se guardara los clientes en una lista enlazada simple
+    Cliente *nuevo = malloc(sizeof(Cliente)); //se crea un nuevo nodo
+    nuevo->sig = NULL;
+
+    printf("Ingrese los datos del cliente\n");
+	printf("Cedula: ");
 	scanf("%s", nuevo->cedula);
 	
 	printf("Nombres: ");
@@ -60,12 +64,47 @@ void crearCliente(){
 	
 	printf("Apellidos: ");
 	scanf("%s", nuevo->apellidos);
-	
 
-	 
+    if (primer_cli == NULL) //si la lista esta vacia (no hay clientes)
+    {
+        primer_cli = nuevo; 
+        fin_cli = nuevo;
+        return;
+    }
+    
+    //insertar al final si el numero de nodos es mayor a cero
+    fin_cli->sig = nuevo;
+    fin_cli = nuevo;
 }
 
 
+
+void imprimirClientes()
+{
+    Cliente *baile = primer_cli;
+    int contador = 1;
+
+    if (aux == NULL)
+    {
+        printf("No hay clientes registrados\n");
+        return;
+    }
+
+    printf("\nLista de Clientes\n");
+    while (aux != NULL) //recorre la lista desde el primero hasta el ultimo
+    {
+        printf("%d. Cedula: %s | Nombres: %s | Apellidos: %s\n", contador, baile->cedula, baile->nombres, 
+		baile->apellidos);
+    	baile = baile->sig;
+        contador++;
+    }
+}
+
+
+void imprimirSolicitudes(){
+	
+	
+}
 
 
 int main() {
@@ -82,30 +121,36 @@ int main() {
         printf("1. Crear cliente\n");
         printf("2. Registrar solicitud\n");
         printf("3. Retirar solicitud\n");
-        printf("4. Salir\n");
+        printf("4. Mostrar clientes\n");
+        printf("5. Mostrar solicitudes\n");
+        printf("6. Salir\n");
         printf("Opcion: ");
         scanf("%d", &op);
 
         switch (op) {
-            case 1: 
-			 
+            case 1:
+				bailecito();
 				break;
             case 2: 
-			//	registrar(); 
+				crearCliente(); 
 				break;
             case 3: 
-			//	retirar(); 
+				imprimirClientes();
 				break;
-            case 4: 
-				printf("Salir\n"); 
+            case 4:
+				imprimirSolicitudes();
 				break;
+            case 5:
 				
-			case 5: 
-            default: 
+				break;
+            case 6:
+				printf("Salir\n");
+				break;
+            default:
 			printf("Opcion no valida\n");
 			 
         }
-    } while (op != 4);
+    } while (op != 6);
 
     return 0;
 }
