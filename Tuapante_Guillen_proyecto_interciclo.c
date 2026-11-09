@@ -14,7 +14,6 @@ typedef struct Solicitud {
     struct Solicitud *sol_sig;              
 } Solicitud;
 
-
 // nodo de la lista de clientes, linsta enlazada simple
 typedef struct Cliente {
     char cedula[15];
@@ -28,6 +27,10 @@ Solicitud *cima_sol = NULL;   // tope de la pila de solicitudes
 Cliente *primer_cli = NULL; //primer y ultimo de la lista enlazada
 Cliente *fin_cli = NULL;
 
+#define MAX_SOLICITUDES 100
+
+Solicitud pila_estatica[MAX_SOLICITUDES];
+int tope_estatico = -1; // -1 indica que la pila esta vacia
 
 //funciones
 //uso general
@@ -36,7 +39,7 @@ void liberarMemoria_cli(); //libera la lista enlazada de los clientes
 void liberarMemoria_sol(); //libera la pila de solicitudes
 void liberarMemoria(); //llama a las dos funciones anteriores para liberar la memoria por completo
 void imprimirClientes(); //muestra los clientes en pantalla
-void imprimirSolicitudes(); //muestra las solicitudes en pantalla
+void imprimirSolicitudes(int version); //muestra las solicitudes en pantalla
 
 //manejo de datos
 void crearCliente(); //toma los datos del cliente y los agrega a un lista sin orden
@@ -46,10 +49,8 @@ void eliminarSolicitud(int version);//borra la solicitud si existe el cliente
 void pop_dinamico();
 
 //versiones estaticas de push y pop
-void push2(Solicitud **tope, Solicitud *nuevo);
 void push_estatico(char cedula_enc[15]);
-Solicitud *pop2(Solicitud **tope);
-Solicitud *pop_estatico(Solicitud **tope);
+void pop_estatico();
 
 
 int main() {
@@ -78,7 +79,7 @@ int main() {
                 imprimirClientes();
                 break;
             case 5: //mostrar solicitudes
-                imprimirSolicitudes();
+                imprimirSolicitudes(version);
                 break;
             case 6: //salir
 				printf("Saliendo del programa.\n"); 
@@ -209,6 +210,7 @@ void crearSolicitud(int version)
     if (primer_cli == NULL)
     {
         printf("\n--------------La lista de clientes esta vacia.\n--------------\n");
+        return;
     }
 
     Cliente *actual = primer_cli;
@@ -269,23 +271,36 @@ void push_dinamico(char cedula_enc[15])
     printf("\n-------------------------\nIngresado con exito.\n-------------------------\n");
 }
 
-void imprimirSolicitudes()
+void imprimirSolicitudes(int version)
 {
-	Solicitud *aux = cima_sol;
-	int contador=1;
-	
-	if(aux==NULL){
-		printf("No hay solicitudes registradas\n");
-        return;		
-	}
-	
-	printf("\n-------------------------\nLista de Solicitud\n-------------------------\n");
-    while (aux != NULL) //recorre la lista desde el primero hasta el ultimo
-    {
-        printf("%d. Cedula: %s\nServicio: %s\necnico: %s\nDescripcion: %s\n-------------------------\n", contador, aux->cedula, 
-		aux->servicio, aux->tecnico, aux->descripcion);
-    	aux = aux->sol_sig;
-        contador++;
+    if (version == 1) {
+        Solicitud *aux = cima_sol;
+        int contador = 1;
+        
+        if (aux == NULL) {
+            printf("No hay solicitudes registradas en la pila dinamica.\n");
+            return;     
+        }
+        
+        printf("\n-------------------------\nLista de Solicitudes\n-------------------------\n");
+        while (aux != NULL) {
+            printf("%d. Cedula: %s\nServicio: %s\nTecnico: %s\nDescripcion: %s\n-------------------------\n", 
+                   contador, aux->cedula, aux->servicio, aux->tecnico, aux->descripcion);
+            aux = aux->sol_sig;
+            contador++;
+        }
+    } else {
+        if (tope_estatico == -1) {
+            printf("No hay solicitudes registradas en la pila estatica.\n");
+            return;
+        }
+
+        printf("\n-------------------------\nLista de Solicitudes\n-------------------------\n");
+        for (int i = tope_estatico; i >= 0; i--) {
+            printf("%d. Cedula: %s\nServicio: %s\nTecnico: %s\nDescripcion: %s\n-------------------------\n", 
+                   tope_estatico - i + 1, pila_estatica[i].cedula, pila_estatica[i].servicio, 
+                   pila_estatica[i].tecnico, pila_estatica[i].descripcion);
+        }
     }
 }
 
@@ -295,18 +310,14 @@ void eliminarSolicitud(int version)
     if (primer_cli == NULL)
     {
         printf("\n--------------La lista de clientes esta vacia.\n--------------\n");
+        return;
     }
 
     if (version == 1) //version memoria dinamica
-    {
         pop_dinamico();
-        printf("\n--------------\nPrimera solicitud de la pila eliminada exitosamente.\n--------------\n");
-    }
+
     else //version estatica
-    {
-        pop_estatico(cima_sol);
-        printf("\n--------------\nPrimera solicitud de la pila eliminada exitosamente.\n--------------\n");
-    }
+        pop_estatico();
 }
 
 void pop_dinamico()
@@ -322,66 +333,42 @@ void pop_dinamico()
     //la solicitud borrada se muestra en pantalla antes de borrarse
     cima_sol = cima_sol->sol_sig;
     free(temp);
-}
-
-// push version 2: recibe un nodo ya creado
-// se usa doble puntero para poder cambiar la cima desde la funcion
-void push2(Solicitud **tope, Solicitud *nuevo)
-{
-    nuevo->sol_sig= *tope; //el nuevo apunta a la cima actual
-    *tope = nuevo;          //el nuevo pasa a ser la cima
+    printf("\n--------------\nPrimera solicitud de la pila eliminada exitosamente.\n--------------\n");
 }
 
 void push_estatico(char cedula_enc[15])
 {
-    Solicitud *nuevo = (Solicitud *)malloc(sizeof(Solicitud));
-
-    if (nuevo == NULL)
+    if (tope_estatico >= MAX_SOLICITUDES - 1)
     {
-        printf("No hay memoria suficiente.\n");
+        printf("Error: La pila estatica esta llena (Overflow).\n");
         return;
     }
 
-    strcpy(nuevo->cedula, cedula_enc);
+    tope_estatico++; // Sube a la cima o tope
+    
+    // Ingresar datos directamente
+    strcpy(pila_estatica[tope_estatico].cedula, cedula_enc);
+    
     printf("Ingrese el servicio que necesita: ");
-    scanf(" %49[^\n]", nuevo->servicio);
+    scanf(" %49[^\n]", pila_estatica[tope_estatico].servicio);
+    
     printf("Ingrese el nombre del tecnico: ");
-    scanf(" %49[^\n]", nuevo->tecnico);
+    scanf(" %49[^\n]", pila_estatica[tope_estatico].tecnico);
+    
     printf("Ingrese una descripcion del problema: ");
-    scanf(" %99[^\n]", nuevo->descripcion);
+    scanf(" %99[^\n]", pila_estatica[tope_estatico].descripcion);
 
-    push2(&cima_sol, nuevo);
-
-    printf("\n-------------------------\nIngresado con exito.\n-------------------------\n");
+    printf("\n-------------------------\nIngresado con exito en pila estatica.\n-------------------------\n");
 }
 
-// pop version 2: saca el nodo de la cima y lo devuelve
-Solicitud *pop2(Solicitud **tope)
+void pop_estatico() 
 {
-    if (*tope == NULL) //pila vacia, no hay nada que sacar
-        return NULL;
+    if (tope_estatico == -1)
+    {
+        printf("La pila esta vacia.\n");
+        return;
+    }
+    tope_estatico--; 
 
-    Solicitud *aux = *tope;
-    *tope = (*tope)->sol_sig; //la cima baja al siguiente
-    aux->sol_sig = NULL;      //el nodo sale desconectado de la pila
-    return aux;
-}
-
-// crea el nodo de la solicitud y lo pasa a push2
-Solicitud *pop_estatico(Solicitud **tope)
-{
-    if (*tope == NULL) //pila vacia, no hay nada que sacar
-        return NULL;
-
-    Solicitud *aux = *tope;
-    *tope = (*tope)->sol_sig; //la cima baja al siguiente
-    aux->sol_sig = NULL;      //el nodo sale desconectado de la pila
-    return aux;
-}
-
-void bailecito()
-{
-	printf("Elija un balicecito\n");
-	printf("Baile 1: Campanas de Belen\n");
-	printf("Baile 2: Por definir");
+    printf("\n--------------\nPrimera solicitud de la pila eliminada exitosamente.\n--------------\n");
 }
