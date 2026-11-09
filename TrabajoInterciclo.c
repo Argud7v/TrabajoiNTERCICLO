@@ -35,7 +35,7 @@ typedef struct Cliente {
     char cedula[15];
     char nombres[50];
     char apellidos[50];
-    struct Cliente *cli_sig;
+    struct Cliente *sig_cli;
 } Cliente;;
 
  Cliente *primer_cli=NULL; // inicio de la lista de clientes
@@ -53,7 +53,7 @@ void crearCliente()
 {
 	//se guardara los clientes en una lista enlazada simple
     Cliente *nuevo = malloc(sizeof(Cliente)); //se crea un nuevo nodo
-    nuevo->sig = NULL;
+    nuevo->sig_cli = NULL;
 
     printf("Ingrese los datos del cliente\n");
 	printf("Cedula: ");
@@ -73,7 +73,7 @@ void crearCliente()
     }
     
     //insertar al final si el numero de nodos es mayor a cero
-    fin_cli->sig = nuevo;
+    fin_cli->sig_cli = nuevo;
     fin_cli = nuevo;
 }
 
@@ -84,18 +84,18 @@ void imprimirClientes()
     Cliente *baile = primer_cli;
     int contador = 1;
 
-    if (aux == NULL)
+    if (baile == NULL)
     {
         printf("No hay clientes registrados\n");
         return;
     }
 
     printf("\nLista de Clientes\n");
-    while (aux != NULL) //recorre la lista desde el primero hasta el ultimo
+    while (baile != NULL) //recorre la lista desde el primero hasta el ultimo
     {
         printf("%d. Cedula: %s | Nombres: %s | Apellidos: %s\n", contador, baile->cedula, baile->nombres, 
 		baile->apellidos);
-    	baile = baile->sig;
+    	baile = baile->sig_cli;
         contador++;
     }
 }
