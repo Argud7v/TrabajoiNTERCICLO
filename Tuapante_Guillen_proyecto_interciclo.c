@@ -11,7 +11,7 @@ typedef struct Solicitud {
     char servicio[50];
     char tecnico[50];
     char descripcion[100];
-    struct Solicitud *sig;              
+    struct Solicitud *sol_sig;              
 } Solicitud;
 
 
@@ -20,7 +20,7 @@ typedef struct Cliente {
     char cedula[15];
     char nombres[50];
     char apellidos[50];
-    struct Cliente *sig;
+    struct Cliente *cli_sig;
 } Cliente;
 
 Solicitud *cima_sol = NULL;   // tope de la pila de solicitudes
@@ -118,7 +118,25 @@ void crearCliente()
     }
     
     //insertar al final si el numero de nodos es mayor a cero
-    fin_cli->sig = nuevo;
+    fin_cli->cli_sig = nuevo;
     fin_cli = nuevo;
+}
+
+void liberarMemoria()
+{
+    Cliente *actual; //para moverse a traves de la lista
+
+    actual = primer_cli;
+    Cliente *siguiente;
+
+    while (actual != NULL)
+    {
+        siguiente = actual->cli_sig; //guardar el siguiente nodo para no perder la lista
+        free(actual); 
+        actual = siguiente;
+    }
+
+    primer_cli = NULL; //asegurarse que no apunten a nada
+    fin_cli = NULL;
 }
 
