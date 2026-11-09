@@ -33,6 +33,10 @@ Cliente *fin_cli = NULL;
 int menu();
 void crearCliente();
 
+void liberarMemoria_cli(); //libera la lista enlazada de los clientes
+void liberarMemoria_sol(); //libera la pila de solicitudes
+void liberarMemoria(); //llama a las dos funciones anteriores para liberar la memoria por completo
+
 
 int main() {
     int op, version;
@@ -75,7 +79,9 @@ int main() {
 			printf("Opcion no valida\n");
 			 
         }
-    } while (op != 4);
+    } while (op != 6);
+
+    liberarMemoria();
 
     return 0;
 }
@@ -100,7 +106,7 @@ void crearCliente()
     //se guardara los clientes en una lista enlazada simple
     Cliente *nuevo = malloc(sizeof(Cliente)); //se crea un nuevo nodo
 
-    printf("Ingrese los datos del cliente");
+    printf("Ingrese los datos del cliente\n");
 	printf("Cedula: ");
 	scanf(" %14[^/n]", nuevo->cedula);
 	
@@ -122,7 +128,7 @@ void crearCliente()
     fin_cli = nuevo;
 }
 
-void liberarMemoria()
+void liberarMemoria_cli()
 {
     Cliente *actual; //para moverse a traves de la lista
 
@@ -138,5 +144,27 @@ void liberarMemoria()
 
     primer_cli = NULL; //asegurarse que no apunten a nada
     fin_cli = NULL;
+}
+
+void liberarMemoria_sol()
+{
+    Solicitud *actual; //para moverse a traves de la lista
+
+    actual = cima_sol;
+    Solicitud *siguiente;
+
+    while (actual != NULL)
+    {
+        siguiente = actual->sol_sig; //guardar el siguiente nodo para no perder la lista
+        free(actual); //liberar
+        actual = siguiente;
+    }
+    cima_sol = NULL; 
+}
+
+void liberarMemoria()
+{
+    liberarMemoria_cli();
+    liberarMemoria_sol();
 }
 
