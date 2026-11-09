@@ -267,7 +267,6 @@ int leerEntero()
     return numero;
 }
 
-
 // push version 2: recibe un nodo ya creado
 // se usa doble puntero para poder cambiar la cima desde la funcion
 void push2(Solicitud **tope, Solicitud *nuevo) {
@@ -306,10 +305,7 @@ void push_version2(char cedula_enc[15])
     scanf(" %99[^\n]", nuevo->descripcion);
 
     push2(&cima_sol, nuevo);
-
-    printf("\n-------------------------\nIngresado con exito.\n-------------------------\n");
 }
-
 
 void liberarMemoria_cli()
 {
