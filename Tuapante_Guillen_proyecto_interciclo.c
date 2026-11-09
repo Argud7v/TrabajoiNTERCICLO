@@ -31,12 +31,13 @@ Cliente *fin_cli = NULL;
 
 //funciones
 int menu();
-void crearCliente();
-
+void crearCliente(); //toma los datos del cliente y los agrega a un lista sin orden
 void liberarMemoria_cli(); //libera la lista enlazada de los clientes
 void liberarMemoria_sol(); //libera la pila de solicitudes
 void liberarMemoria(); //llama a las dos funciones anteriores para liberar la memoria por completo
 void imprimirClientes(); //muestra los clientes en pantalla
+void crearSolicitud(int version);
+void push_dinamico(char cedula_enc[15]);
 
 
 int main() {
@@ -56,18 +57,10 @@ int main() {
                 crearCliente();
 				break;
             case 2: //registrar solicitud (push, ambas versiones)
-			    if (version == 1)
-                {
-                } 
-                else
-                {}
+                crearSolicitud(version);
 				break;
             case 3: //retirar solicitud (pop, ambas versiones)
-                if (version == 1)
-                {
-                } 
-                else
-                {}
+
 				break;
             case 4: //mostar clientes
                 imprimirClientes();
@@ -170,7 +163,6 @@ void liberarMemoria()
     liberarMemoria_sol();
 }
 
-
 void imprimirClientes()
 {
     Cliente *baile = primer_cli;
@@ -190,4 +182,75 @@ void imprimirClientes()
     	baile = baile->cli_sig;
         contador++;
     }
+}
+
+void crearSolicitud(int version)
+{
+    char ced_buscar[15];
+
+    printf("Ingrese la cedula del cliente que desea crear una solicitud: ");
+    scanf("%14s", ced_buscar);
+
+    //por si la pila esta vacia
+    if (primer_cli == NULL)
+    {
+        printf("\n--------------La lista de clientes esta vacia.\n--------------\n");
+    }
+
+    Cliente *actual = primer_cli;
+
+    while (actual != NULL && strcmp(ced_buscar, actual->cedula) != 0)
+    {
+        actual = actual->cli_sig;
+    }
+
+    if (actual == NULL)
+    {
+        printf("\n-------------------------\nLa cedula no esta reegistrada como cliente. Por favor registrarse.\n-------------------------\n");
+        return;
+    }
+
+    printf("\n-------------------------\nCliente encontrado:\n");
+     printf("Cedula: %s | Nombres: %s | Apellidos: %s\n--------------------------\n", actual->cedula, actual->nombres, 
+		actual->apellidos);
+    
+    if (version == 1) //version memoria dinamica
+        push_dinamico(actual->cedula);
+    else //version estatica
+    {}
+}
+
+void push_dinamico(char cedula_enc[15])
+{
+    Solicitud *nuevo = (Solicitud *)malloc(sizeof(Solicitud));
+
+    //medida de seguridad
+    if (nuevo == NULL)
+    {
+        printf("No hay memoria suficiente.\n");
+        return;
+    }
+
+    //Ingreso de datos
+    strcpy(nuevo->cedula, cedula_enc); //si la cedula existe se copia como esta
+    printf("Ingrese el servicio que necesita: ");
+    scanf(" %49[^\n]", nuevo->servicio);
+    printf("Ingrese el nombre del tecnico: ");
+    scanf(" %49[^\n]", nuevo->tecnico);
+    
+    printf("Ingrese una descripcion del problema: ");
+    scanf(" %99[^\n]", nuevo->descripcion); 
+
+    if (cima_sol == NULL) // Si la pila esta vacia
+    {
+        nuevo->sol_sig = NULL;
+        cima_sol = nuevo;
+    }
+    else // Si ya hay elementos en la pila
+    {
+        nuevo->sol_sig = cima_sol;
+        cima_sol = nuevo;
+    }
+
+    printf("\n-------------------------\nIngresado con exito.\n-------------------------\n");
 }
