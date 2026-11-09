@@ -10,18 +10,15 @@
 //funciones
 void bailecito();
 void crearCliente();
-//void crearSolicitud();
+void crearSolicitud(int version);
 void imprimirClientes();
 void imprimirSolicitudes();
+void push_dinamico(char cedula_enc[15]);
+void push_version2(char cedula_enc[15]);
+
 void liberarMemoria_cli();
 void liberarMemoria_sol();
 void liberarMemoria();
-
-//void registrar(); 
-//void retirar(); 
-
-
-
 
 
 // datos de una solicitud
@@ -34,6 +31,10 @@ typedef struct Solicitud {
 } Solicitud;
 
  Solicitud *cima_sol=NULL; // tope de la pila de solicitudes
+
+//prototipos que usan Solicitud (van despues del struct)
+void push2(Solicitud **tope, Solicitud *nuevo);
+Solicitud *pop2(Solicitud **tope);
 
 // nodo de la lista de clientes
 typedef struct Cliente {
@@ -57,12 +58,12 @@ void bailecito(){
 void crearCliente()
 {
 	//se guardara los clientes en una lista enlazada simple
-    Cliente *nuevo = malloc(sizeof(Cliente)); //se crea un nuevo nodo
+    Cliente *nuevo = (Cliente *)malloc(sizeof(Cliente)); //se crea un nuevo nodo
     nuevo->sig_cli = NULL;
 
     printf("Ingrese los datos del cliente\n");
 	printf("Cedula: ");
-	scanf(" %14[^\n]s ", nuevo->cedula);
+	scanf(" %14[^\n]", nuevo->cedula);
 	
 	printf("Nombres: ");
 	scanf(" %49[^\n]s", nuevo->nombres);
@@ -105,6 +106,42 @@ void imprimirClientes()
     }
 }
 
+void crearSolicitud(int version){
+    char ced_buscar[15];
+
+    printf("Ingrese la cedula del cliente que desea crear una solicitud: ");
+    scanf("%14s", ced_buscar);
+
+    //por si la pila esta vacia
+    if (primer_cli == NULL)
+    {
+        printf("\n--------------La lista de clientes esta vacia.\n--------------\n");
+        return;
+    }
+
+    Cliente *actual = primer_cli;
+
+    while (actual != NULL && strcmp(ced_buscar, actual->cedula) != 0)
+    {
+        actual = actual->sig_cli;
+    }
+
+    if (actual == NULL)
+    {
+        printf("\n-------------------------\nLa cedula no esta reegistrada como cliente. Por favor registrarse.\n-------------------------\n");
+        return;
+    }
+
+    printf("\n-------------------------\nCliente encontrado:\n");
+     printf("Cedula: %s | Nombres: %s | Apellidos: %s\n--------------------------\n", actual->cedula, actual->nombres, 
+		actual->apellidos);
+    
+    if (version == 1) //version memoria dinamica
+        push_dinamico(actual->cedula);
+    else //version 2: push con nodo ya creado
+        push_version2(actual->cedula);
+}
+
 void imprimirSolicitudes(){
 	
 	Solicitud *aux = cima_sol;
@@ -118,13 +155,93 @@ void imprimirSolicitudes(){
 	printf("\nLista de Solicitud\n");
     while (aux != NULL) //recorre la lista desde el primero hasta el ultimo
     {
-        printf("%d. Cedula: %s | Servicio: %s | Tecnico: %s\n | Descripcion: %s |", contador, aux->cedula, 
+        printf("%d. Cedula: %s | Servicio: %s | Tecnico: %s | Descripcion: %s\n", contador, aux->cedula,
 		aux->servicio, aux->tecnico, aux->descripcion);
     	aux = aux->sig_sol;
         contador++;
     }
 	
 	
+}
+
+//push: version 1
+
+void push_dinamico(char cedula_enc[15])
+{
+    Solicitud *nuevo = (Solicitud *)malloc(sizeof(Solicitud));
+
+    //medida de seguridad
+    if (nuevo == NULL)
+    {
+        printf("No hay memoria suficiente.\n");
+        return;
+    }
+
+    //Ingreso de datos
+    strcpy(nuevo->cedula, cedula_enc); //si la cedula existe se copia como esta
+    printf("Ingrese el servicio que necesita: ");
+    scanf(" %49[^\n]", nuevo->servicio);
+    printf("Ingrese el nombre del tecnico: ");
+    scanf(" %49[^\n]", nuevo->tecnico);
+    
+    printf("Ingrese una descripcion del problema: ");
+    scanf(" %99[^\n]", nuevo->descripcion); 
+
+    if (cima_sol == NULL) // Si la pila esta vacia
+    {
+        nuevo->sig_sol = NULL;
+        cima_sol = nuevo;
+    }
+    else // Si ya hay elementos en la pila
+    {
+        nuevo->sig_sol = cima_sol;
+        cima_sol = nuevo;
+    }
+
+    printf("\n-------------------------\nIngresado con exito.\n-------------------------\n");
+}
+
+
+// push version 2: recibe un nodo ya creado
+// se usa doble puntero para poder cambiar la cima desde la funcion
+void push2(Solicitud **tope, Solicitud *nuevo) {
+    nuevo->sig_sol = *tope; //el nuevo apunta a la cima actual
+    *tope = nuevo;          //el nuevo pasa a ser la cima
+}
+
+// pop version 2: saca el nodo de la cima y lo devuelve
+Solicitud *pop2(Solicitud **tope) {
+    if (*tope == NULL) //pila vacia, no hay nada que sacar
+        return NULL;
+
+    Solicitud *aux = *tope;
+    *tope = (*tope)->sig_sol; //la cima baja al siguiente
+    aux->sig_sol = NULL;      //el nodo sale desconectado de la pila
+    return aux;
+}
+
+// crea el nodo de la solicitud y lo pasa a push2
+void push_version2(char cedula_enc[15])
+{
+    Solicitud *nuevo = (Solicitud *)malloc(sizeof(Solicitud));
+
+    if (nuevo == NULL)
+    {
+        printf("No hay memoria suficiente.\n");
+        return;
+    }
+
+    strcpy(nuevo->cedula, cedula_enc);
+    printf("Ingrese el servicio que necesita: ");
+    scanf(" %49[^\n]", nuevo->servicio);
+    printf("Ingrese el nombre del tecnico: ");
+    scanf(" %49[^\n]", nuevo->tecnico);
+    printf("Ingrese una descripcion del problema: ");
+    scanf(" %99[^\n]", nuevo->descripcion);
+
+    push2(&cima_sol, nuevo);
+
+    printf("\n-------------------------\nIngresado con exito.\n-------------------------\n");
 }
 
 
@@ -183,8 +300,7 @@ int main() {
         printf("3. Registrar solicitud\n");
         printf("4. Mostrar Clientes\n");
         printf("5. Mostrar Solicitudes\n");
-        printf("6. Mostrar nada\n");
-        printf("7. Salir\n");
+        printf("6. Salir\n");
         printf("Opcion: ");
         scanf("%d", &op);
 
@@ -196,7 +312,7 @@ int main() {
 				crearCliente(); 
 				break;
             case 3: 
-			//	crearSolicitud();
+				crearSolicitud(version);
 				break;
             case 4:
 				imprimirClientes();
@@ -213,5 +329,6 @@ int main() {
         }
     } while (op != 6);
 
+    liberarMemoria(); //liberar clientes y solicitudes al salir
     return 0;
 }
