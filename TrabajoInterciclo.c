@@ -8,6 +8,7 @@
 
 
 //funciones
+void bailecito();
 void crearCliente();
 //void registrar(); 
 //void retirar(); 
@@ -25,7 +26,7 @@ typedef struct Solicitud {
     struct Solicitud *sig;              
 } Solicitud;
 
- Solicitud *cima_sol=NULL;
+ Solicitud *cima_sol=NULL; // tope de la pila de solicitudes
 
 // nodo de la lista de clientes
 typedef struct Cliente {
@@ -36,8 +37,15 @@ typedef struct Cliente {
 }Cliente;
 
  Cliente *cima_cli=NUll;
- Cliente *fi_cli=NULL;
+ Cliente *fin_cli=NULL;
  
+void bailecito(){
+	
+	printf("Eliga un balicecito");
+	printf("Baile 1: Campanas de Belen");
+	printf("Baile 2: Por definir");
+}
+
 
 void crearCliente(){
 	
@@ -80,7 +88,7 @@ int main() {
 
         switch (op) {
             case 1: 
-			//	crearCliente(); 
+			 
 				break;
             case 2: 
 			//	registrar(); 
@@ -91,6 +99,8 @@ int main() {
             case 4: 
 				printf("Salir\n"); 
 				break;
+				
+			case 5: 
             default: 
 			printf("Opcion no valida\n");
 			 
