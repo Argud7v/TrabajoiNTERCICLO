@@ -118,12 +118,13 @@ int main() {
 
     do {
         printf("\n--- SIGSAT ---\n");
-        printf("1. Crear cliente\n");
-        printf("2. Registrar solicitud\n");
-        printf("3. Retirar solicitud\n");
-        printf("4. Mostrar clientes\n");
-        printf("5. Mostrar solicitudes\n");
-        printf("6. Salir\n");
+        printf("1. Bailecito\n");
+        printf("2. Crear cliente\n");
+        printf("3. Registrar solicitud\n");
+        printf("4. Retirar solicitud\n");
+        printf("5. Mostrar clientes\n");
+        printf("6. Mostrar solicitudes\n");
+        printf("7. Salir\n");
         printf("Opcion: ");
         scanf("%d", &op);
 
