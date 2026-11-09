@@ -30,12 +30,16 @@ Cliente *fin_cli = NULL;
 
 
 //funciones
+//uso general
 int menu();
-void crearCliente(); //toma los datos del cliente y los agrega a un lista sin orden
 void liberarMemoria_cli(); //libera la lista enlazada de los clientes
 void liberarMemoria_sol(); //libera la pila de solicitudes
 void liberarMemoria(); //llama a las dos funciones anteriores para liberar la memoria por completo
 void imprimirClientes(); //muestra los clientes en pantalla
+void imprimirSolicitudes(); //muestra las solicitudes en pantalla
+
+//manejo de datos
+void crearCliente(); //toma los datos del cliente y los agrega a un lista sin orden
 void crearSolicitud(int version);
 void push_dinamico(char cedula_enc[15]);
 
@@ -66,6 +70,7 @@ int main() {
                 imprimirClientes();
                 break;
             case 5: //mostrar solicitudes
+                imprimirSolicitudes();
                 break;
             case 6: //salir
 				printf("Saliendo del programa.\n"); 
@@ -253,4 +258,24 @@ void push_dinamico(char cedula_enc[15])
     }
 
     printf("\n-------------------------\nIngresado con exito.\n-------------------------\n");
+}
+
+void imprimirSolicitudes()
+{
+	Solicitud *aux = cima_sol;
+	int contador=1;
+	
+	if(aux==NULL){
+		printf("No hay solicitudes registradas\n");
+        return;		
+	}
+	
+	printf("\n-------------------------\nLista de Solicitud\n-------------------------\n");
+    while (aux != NULL) //recorre la lista desde el primero hasta el ultimo
+    {
+        printf("%d. Cedula: %s\nServicio: %s\necnico: %s\nDescripcion: %s\n-------------------------\n", contador, aux->cedula, 
+		aux->servicio, aux->tecnico, aux->descripcion);
+    	aux = aux->sol_sig;
+        contador++;
+    }
 }
