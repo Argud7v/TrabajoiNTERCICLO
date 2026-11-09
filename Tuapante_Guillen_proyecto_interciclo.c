@@ -372,3 +372,10 @@ void pop_estatico()
 
     printf("\n--------------\nPrimera solicitud de la pila eliminada exitosamente.\n--------------\n");
 }
+
+/*void bailecito()
+{
+	printf("Elija un bailecito\n");
+	printf("Baile 1: Campanas de Belen\n");
+	printf("Baile 2: La Macarena\n");
+}*/
