@@ -48,15 +48,7 @@ int main()
 
         switch (op) {
             case 1: //ingresar
-            	printf("Ingrese el nombre del producto: ");
-				scanf(" %39[^\n]", nombre);
-				printf("Ingrese el codigo del producto: ");
-				scanf("%d", &cod);
-				
-				if (version == 1) //pila
-					push_producto(nombre, cod);
-				else //cola
-					insertar_cola(nombre, cod);
+            	ingresar_producto(version);
 				break;
             case 2: //eliminar
 				if (version == 1) //pila
@@ -110,10 +102,10 @@ void ingresar_producto(int version)
     printf("Ingrese el nombre del producto: ");
     scanf(" %39[^\n]", nombre); 
 
-    if (version == 1) {
+    if (version == 1)
         push_producto(nombre, codigo);
-    } 
-    
+    else
+    	insertar_cola(nombre, codigo);
 }
 
 //funciones para la pila
