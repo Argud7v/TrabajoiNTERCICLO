@@ -19,14 +19,17 @@ Producto *final = NULL;
 
 //funciones
 int menu();
+void ingresar_producto(int version);
 //pila
 void push_producto(char nombre[40], int codigo);
 void pop_producto();
 void liberarMemoria_pila();
+void imprimir_pila();
 //cola
 void liberarMemoria_cola();
 void insertar_cola(char nombre[40], int codigo);
 void eliminar_cola();
+void imprimir_cola();
 
 
 int main()
@@ -56,13 +59,16 @@ int main()
 					insertar_cola(nombre, cod);
 				break;
             case 2: //eliminar
-            	if (version == 1) //pila
+				if (version == 1) //pila
 					pop_producto();
 				else //cola
 					eliminar_cola();
 				break;
             case 3: //mostrar productos
-               
+               	if (version == 1) //pila
+					imprimir_pila();
+				else //cola
+					imprimir_cola();
 				break;
             case 4: //salir
             	printf("Saliendo---\n");
@@ -91,6 +97,23 @@ int menu()
         printf("Opcion: ");
         scanf("%d", &opcion);
         return opcion;
+}
+
+void ingresar_producto(int version)
+{
+    char nombre[40];
+    int codigo;
+
+    printf("\nIngrese el codigo: ");
+    scanf("%d", &codigo);
+    
+    printf("Ingrese el nombre del producto: ");
+    scanf(" %39[^\n]", nombre); 
+
+    if (version == 1) {
+        push_producto(nombre, codigo);
+    } 
+    
 }
 
 //funciones para la pila
@@ -150,6 +173,26 @@ void liberarMemoria_pila()
 	
 	cima = NULL;
 }
+
+void imprimir_pila()
+{
+    if (cima == NULL)
+    {
+        printf("\nLa Pila esta vacia.\n");
+        return;
+    }
+
+    Producto *actual = cima;
+    printf("\n=== PRODUCTOS EN LA PILA (Cima -> Base) ===\n");
+    while (actual != NULL)
+    {
+        printf("Codigo: %d | Nombre: %s\n", actual->codigo, actual->nombre_prod);
+        actual = actual->sig;
+    }
+    
+}
+
+//funciones cola
 
 void liberarMemoria_cola()
 {
@@ -216,4 +259,20 @@ void eliminar_cola()
 
     free(temp); 
        printf("\n--------------\nEliminado exitosamente.\n--------------\n");
+}
+
+void imprimir_cola()
+{
+    if (frente == NULL)
+	{
+        printf("No hay productos.\n");
+        return;
+    }
+    Producto *actual = frente;
+    printf("\n--- Productos en la Cola ---\n");
+    while (actual != NULL) {
+        printf("Codigo: %d | Nombre: %s\n", actual->codigo, actual->nombre_prod);
+        actual = actual->sig;
+    }
+    printf("----------------------------\n");
 }
