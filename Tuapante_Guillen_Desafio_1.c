@@ -33,10 +33,9 @@ void imprimir_cola();
 
 
 int main()
-{
-	char nombre[40];	
-	int op, version, cod;
-
+{	
+	int op, version;
+	
     do {
         printf("Usar Pila=1 o Cola=2\n");
         printf("Version: ");
