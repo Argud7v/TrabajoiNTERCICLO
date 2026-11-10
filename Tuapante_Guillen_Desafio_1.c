@@ -25,6 +25,8 @@ void pop_producto();
 void liberarMemoria_pila();
 //cola
 void liberarMemoria_cola();
+void insertar_cola(char nombre[40], int codigo);
+void eliminar_cola();
 
 
 int main()
@@ -49,20 +51,26 @@ int main()
 				scanf("%d", &cod);
 				
 				if (version == 1) //pila
-					push_producto(mombre, cod);
+					push_producto(nombre, cod);
 				else //cola
-				
-                
+					insertar_cola(nombre, cod);
 				break;
-            case 2: 
-                
+            case 2: //eliminar
+            	if (version == 1) //pila
+					pop_producto();
+				else //cola
+					eliminar_cola();
 				break;
-            case 3: 
+            case 3: //mostrar productos
                
 				break;
-            case 4: 
+            case 4: //salir
+            	printf("Saliendo---\n");
+            	if (version == 1)
+                    liberarMemoria_pila();
+                else
+                    liberarMemoria_cola();
             	break;
-                
             default: 
 			printf("Opcion no valida\n");
 			 
@@ -76,7 +84,6 @@ int main()
 int menu()
 {
     int opcion;
-    
         printf("1. Ingresar Producto\n");
         printf("2. Eliminar Producto\n");
         printf("3. Imprimir Productos\n");
@@ -170,5 +177,43 @@ void insertar_cola(char nombre[40], int codigo)
         return;
     }
     
+    nuevo->sig = NULL;
+    nuevo->codigo = codigo;
+    strcpy(nuevo->nombre_prod, nombre);
     
+ 
+    if (frente == NULL) // cola vacia
+    {
+        frente = nuevo;
+        final = nuevo;
+    }
+    else //insertar al final
+    {
+        final->sig = nuevo;
+        final = nuevo;
+    }
+    
+    printf("\n-------------------------\nIngresado a la cola con exito.\n-------------------------\n");
+}
+
+void eliminar_cola()
+{
+    if (frente == NULL)
+    {
+        printf("No hay productos ingresados.\n");
+        return;
+    }
+
+    // Siempre sale el frente
+    Producto *temp = frente;
+    frente = frente->sig; 
+
+    // Si al eliminar el elemento la cola queda vacia, el final debe ser NULL
+    if (frente == NULL)
+    {
+        final = NULL;
+    }
+
+    free(temp); 
+       printf("\n--------------\nEliminado exitosamente.\n--------------\n");
 }
