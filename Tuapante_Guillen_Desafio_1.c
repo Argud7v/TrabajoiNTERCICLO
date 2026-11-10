@@ -183,7 +183,7 @@ void imprimir_pila()
     }
 
     Producto *actual = cima;
-    printf("\n=== PRODUCTOS EN LA PILA (Cima -> Base) ===\n");
+    printf("\n=== PRODUCTOS EN LA PILA ===\n");
     while (actual != NULL)
     {
         printf("Codigo: %d | Nombre: %s\n", actual->codigo, actual->nombre_prod);
@@ -269,7 +269,7 @@ void imprimir_cola()
         return;
     }
     Producto *actual = frente;
-    printf("\n--- Productos en la Cola ---\n");
+    printf("\n=== PRODUCTOS EN LA COLA ===\n");
     while (actual != NULL) {
         printf("Codigo: %d | Nombre: %s\n", actual->codigo, actual->nombre_prod);
         actual = actual->sig;
